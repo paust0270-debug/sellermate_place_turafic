@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+  <title>네이버 트래픽 자동화</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <div class="toolbar">
+      <button type="button" class="primary" id="btnStart">▶ 시작</button>
+      <button type="button" class="danger" id="btnStop">■ 중지</button>
+      <button type="button" class="secondary" id="btnSaveConfig">설정 저장</button>
+      <button type="button" class="secondary" id="btnSaveResults">결과 저장</button>
+      <button type="button" class="secondary" id="btnResetStats">초기화</button>
+      <span class="status" id="runnerStatus">대기 중</span>
+    </div>
+
+    <div class="main-flex">
+      <div class="row-top">
+        <div class="panel task-panel">
+          <h3>작업 키워드</h3>
+          <div class="body">
+            <table class="data" id="taskTable">
+              <thead>
+                <tr>
+                  <th class="col-check" style="width:28px"><input type="checkbox" id="checkAll" title="전체 선택" /></th>
+                  <th class="col-rownum">순번</th>
+                  <th>검색 키워드</th>
+                  <th>상품 URL</th>
+                  <th id="thSecondKeyword" title="B(2차만) 선택 시 필수 — 검색에 사용할 전체 제목/키워드">2차 키워드 (B필수)</th>
+                  <th class="cell-center col-store" style="width:140px" title="순위 체크 후 자동 표시">상점명</th>
+                  <th class="cell-center" style="width:56px" title="일일 목표 횟수 (0=무제한)">목표</th>
+                  <th class="cell-center" style="width:64px" title="성공/목표">성공</th>
+                  <th class="cell-center" style="width:48px" title="실패 횟수">실패</th>
+                  <th class="cell-center" style="width:56px" title="순위체크 결과">순위</th>
+                  <th class="cell-center" style="width:56px" title="방문자 리뷰 수">리뷰</th>
+                  <th class="cell-center" style="width:48px" title="별점">별점</th>
+                </tr>
+              </thead>
+              <tbody id="taskBody"></tbody>
+            </table>
+            <div class="row-tools">
+              <button type="button" id="btnAddRow">행 추가</button>
+              <button type="button" id="btnDelRow">선택 행 삭제</button>
+              <button type="button" class="danger-inline" id="btnClearAllRows">전체 삭제</button>
+            </div>
+          </div>
+        </div>
+        <div class="config-row">
+          <div class="panel config-panel delay-panel">
+            <div class="panel-title-row">
+              <h3>작업 딜레이 (ms)</h3>
+              <button type="button" class="panel-header-save" id="btnSaveDelays" title="딜레이·작업 선택(A/B)·최대 스크롤·워크 모드 등 engine-config.json에 저장">저장</button>
+            </div>
+            <div class="body delay-body">
+              <div class="delay-grid delay-grid--head">
+                <label>작업 선택</label>
+                <select id="searchFlowVersion" class="mode mode-span" style="grid-column:2/4">
+                  <option value="main">A — 메인키워드 검색</option>
+                  <option value="second">B — 2차 키워드로만 (제목풀, 필수입력)</option>
+                  <option value="rankOnly">C — 순위체크만 (트래픽 없음)</option>
+                </select>
+              </div>
+              <div class="delay-grid" id="delayGrid"></div>
+              <div class="delay-grid">
+                <label title="트래픽: 목록 스크롤 / D순위: 쇼핑 최대 페이지">최대 스크롤</label>
+                <input type="number" id="maxScroll" class="delay-num-tight" min="1" value="4" style="grid-column:2/4" title="D모드에서는 쇼핑 검색 최대 페이지 수" />
+              </div>
+              <div class="delay-grid delay-grid--head">
+                <label>워크 모드</label>
+                <select id="workMode" class="mode mode-span" style="grid-column:2/4">
+                  <option value="mobile">Mobile</option>
+                  <option value="desktop">Desktop</option>
+                  <option value="random">PC+Mobile 랜덤</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="panel config-panel ua-panel">
+            <h3>User-Agent</h3>
+            <div class="body ua-body">
+              <label class="ua-label">Desktop (줄당 1개)</label>
+              <textarea class="block compact-textarea" rows="2" id="uaDesktop" placeholder="비워두면 기본 UA 자동 사용 (Chrome/131)"></textarea>
+              <label class="ua-label">Mobile</label>
+              <textarea class="block compact-textarea" rows="2" id="uaMobile" placeholder="비워두면 기본 UA 자동 사용 (Galaxy S23 Chrome/144)"></textarea>
+            </div>
+          </div>
+          <div class="panel config-panel proxy-panel">
+            <div class="panel-title-row">
+              <h3>IP 로테이션</h3>
+              <button type="button" class="panel-header-save" id="btnSaveProxyAirplane" title="USB 토글 설정을 engine-config.json에 저장">저장</button>
+            </div>
+            <div class="body proxy-body">
+              <div class="checkbox-row">
+                <input type="checkbox" id="toggleUsbDataBeforeTask" />
+                <label for="toggleUsbDataBeforeTask">작업 전 USB 데이터 OFF→ON 실행 (USB 폰 연결 시)</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel log-wrap">
+        <h3>로그</h3>
+        <div class="body">
+          <textarea class="block log-area" id="logArea" readonly></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="renderer.js"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+{
+  "name": "sellermate-place-gui",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sellermate Place rank-check GUI",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --win portable --x64"
+  },
+  "author": "sellermate",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "electron": "^37.2.6",
+    "electron-builder": "^26.8.1"
+  },
+  "build": {
+    "appId": "com.sellermate.place-gui",
+    "productName": "SellermatePlaceGUI",
+    "directories": {
+      "output": "dist-exe"
+    },
+    "files": [
+      "**/*",
+      "!dist-exe/**",
+      "!dist-exe-*/**"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "signAndEditExecutable": false
+    }
+  }
+}
