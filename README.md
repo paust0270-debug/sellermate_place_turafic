@@ -1,24 +1,14 @@
 # sellermate_place_turafic
 
-플레이스 순위체크 GUI 실행기입니다.
+네이버 플레이스 순위 체크용 Electron GUI입니다.
 
-## 실행 방법
+## 실행
 
-1. 이 폴더에서 의존성 설치
-   - `npm install`
-2. GUI 실행
-   - `npm start`
-3. EXE(포터블) 빌드
-   - `npm run pack`
-   - 결과물: `dist-exe` 폴더
+1. `npm install`
+2. `npm start`
+3. 포터블 빌드: `npm run pack` (출력은 `package.json`의 `directories.output` 기준, 예: `dist-exe`)
 
-## 동작 방식
+## 참고
 
-- GUI는 `C:\Users\{C\Desktop\sellermate_naver_place_all`의
-  `place-check\batch\check-place-batch.ts`를 직접 실행합니다.
-- 옵션에 따라 아래 플래그를 붙여 실행합니다.
-  - `--slot-only`
-  - `--free-only`
-  - `--force-top20`
-  - `--once`
-  - `--limit=N`
+- `main.cjs`의 `SOURCE_ROOT`를 본인 PC의 `sellermate_naver_place_all` 경로로 맞춥니다.
+- 브라우저 작업은 해당 폴더의 `place-check` 코어·의존성(`puppeteer-real-browser` 등)을 사용합니다.
